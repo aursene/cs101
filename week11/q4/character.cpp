@@ -10,6 +10,7 @@ using namespace std;
 
 std::default_random_engine engine{static_cast<unsigned int>(time(0))};
 std::uniform_int_distribution<unsigned int> d6(1, 6);
+vector<string> statList{"Strength", "Dexterity", "Constitution", "Wisdom", "Intelligence", "Charisma"};
 
 character::character()
 {
@@ -43,7 +44,6 @@ void character::allocateStats()
 {
   int j{};
   vector<bool> allocated{false, false, false, false, false, false};
-  vector<string> statAllocation{"Strength", "Dexterity", "Constitution", "Wisdom", "Intelligence", "Charisma"};
   vector<string>::iterator it;
 
   for (int l = 0; l < statSpread.size(); l++)
@@ -52,7 +52,7 @@ void character::allocateStats()
     int j{};
     cout << "Select what stat you would like to allocate your " << statSpread[l] << " to." << endl;
 
-    for (string h : statAllocation)
+    for (string h : statList)
     {
       j++;
       cout << j << " - " << h << " = " << stats[j - 1] << endl;
@@ -75,9 +75,14 @@ void character::allocateStats()
       }
     }
   }
-  for (int j : stats)
-    cout << j << ((j == stats.back()) ? " " : ", ");
   system("clear");
+  cout << "Your stats are: ";
+  int tmp{};
+  for (int j : stats)
+  {
+    cout << statList[tmp] << " - " << j << endl;
+    tmp++;
+  }
 }
 
 void character::rollStats()
