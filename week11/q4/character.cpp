@@ -14,7 +14,7 @@ vector<string> statList{"Strength", "Dexterity", "Constitution", "Wisdom", "Inte
 
 character::character()
 {
-  cout << "\nI am born!\n";
+  cout << "I am born!\n";
 }
 
 string character::getClass()
@@ -149,6 +149,44 @@ void character::rollStats()
   cout << endl;
 }
 
-void character::selectEquip(string chClass)
+void character::selectEquip()
 {
+  int choice{};
+  cout << "Please select your starting equipment: \n"
+       << "1 - Dagger (Best for Rogues)\n"
+       << "2 - Broadsword (Best for Fighters)\n"
+       << "3 - Shield (Best for Defense)\n";
+  while (true)
+  {
+    cin >> choice;
+    if (choice == 1)
+    {
+      equipment.push_back("Dagger");
+      break;
+    }
+    else if (choice == 2)
+    {
+      equipment.push_back("Broadsword");
+      break;
+    }
+    else if (choice == 3)
+    {
+      equipment.push_back("Shield");
+      break;
+    }
+    else
+    {
+      cout << "Invalid choice\n";
+    }
+  }
+}
+
+string character::getEquipment()
+{
+  string output;
+  for (string i : equipment)
+  {
+    output += i + ((i == equipment.back()) ? "" : ", ");
+  }
+  return output;
 }

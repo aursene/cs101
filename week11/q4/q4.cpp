@@ -11,5 +11,8 @@ int main()
   Player1.displayStats();
   Player1.selectClass();
   Player1.displayStats();
+  Player1.selectEquip();
+  cout << "You have a " << Player1.getEquipment() << ".";
+
   cout << "\n\ngod save the queen\n\n";
 }

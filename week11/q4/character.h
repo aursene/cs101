@@ -10,7 +10,8 @@ public:
   void allocateStats();
   void displayStats();
   void rollStats();
-  void selectEquip(std::string);
+  void selectEquip();
+  std::string getEquipment();
   std::string getClass();
   void selectClass();
 
@@ -19,6 +20,7 @@ private:
   int health{5};
 
   std::vector<int> statSpread{};
+  std::vector<std::string> equipment{};
 
   // order for stats goes Strength, Dexterity, Consitution, Intelligence, Wisdom, Charisma
   std::vector<int> stats{1, 1, 1, 1, 1, 1};
