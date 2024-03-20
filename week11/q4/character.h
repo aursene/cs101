@@ -8,10 +8,14 @@ public:
   character();
   int rollOneStat();
   void allocateStats();
+  void displayStats();
   void rollStats();
+  void selectEquip(std::string);
+  std::string getClass();
+  void selectClass();
 
 private:
-  std::string build{"Commoner"};
+  std::string chClass{"Commoner"};
   int health{5};
 
   std::vector<int> statSpread{};

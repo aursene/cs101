@@ -17,6 +17,49 @@ character::character()
   cout << "\nI am born!\n";
 }
 
+string character::getClass()
+{
+  return chClass;
+}
+
+void character::selectClass()
+{
+  string classSelect;
+  cout << "Please select your Class: \n"
+       << "Rogue - High Dex, Low Con\n"
+       << "Fighter - High Str, Low Int\n"
+       << "Wizard - High Int, Low Str\n";
+  cin >> classSelect;
+  while (true)
+  {
+    if (classSelect == "Rogue")
+    {
+      chClass = "Rogue";
+      stats[1] += 2;
+      stats[2] -= 2;
+      break;
+    }
+    if (classSelect == "Fighter")
+    {
+      chClass = "Fighter";
+      stats[0] += 2;
+      stats[4] -= 2;
+      break;
+    }
+    if (classSelect == "Wizard")
+    {
+      chClass = "Wizard";
+      stats[4] += 2;
+      stats[0] -= 2;
+      break;
+    }
+    else
+    {
+      cout << "Please select one of the three available classes";
+    }
+  }
+}
+
 int character::rollOneStat()
 {
   std::vector<int> statRolls{};
@@ -76,6 +119,10 @@ void character::allocateStats()
     }
   }
   system("clear");
+}
+
+void character::displayStats()
+{
   cout << "Your stats are: ";
   int tmp{};
   for (int j : stats)
@@ -100,4 +147,8 @@ void character::rollStats()
     cout << k << (counter == statSpread.size() ? " " : ", ");
   }
   cout << endl;
+}
+
+void character::selectEquip(string chClass)
+{
 }
