@@ -39,14 +39,14 @@ void character::selectClass()
       stats[2] -= 2;
       break;
     }
-    if (classSelect == "Fighter")
+    else if (classSelect == "Fighter")
     {
       chClass = "Fighter";
       stats[0] += 2;
       stats[4] -= 2;
       break;
     }
-    if (classSelect == "Wizard")
+    else if (classSelect == "Wizard")
     {
       chClass = "Wizard";
       stats[4] += 2;
@@ -189,4 +189,26 @@ string character::getEquipment()
     output += i + ((i == equipment.back()) ? "" : ", ");
   }
   return output;
+}
+
+void character::calculateStats()
+{
+  // modifier calculations
+  int counter{};
+  for (int j : stats)
+  {
+    cout << j;
+
+    modifiers[counter] = ((j - 10) / 2);
+    cout << " and mod is " << modifiers[counter] << endl;
+    cout << modifiers[counter] << endl;
+    counter++;
+  }
+  // ac calculations
+  ac = 10 + dex;
+  for (string i : equipment)
+  {
+    if (i == "Leather Armor")
+      ac = 11 + modifiers[1];
+  }
 }

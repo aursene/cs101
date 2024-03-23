@@ -12,12 +12,15 @@ public:
   void rollStats();
   void selectEquip();
   std::string getEquipment();
-  std::string getClass();
   void selectClass();
+  std::string getClass();
+  void calculateStats();
+  std::vector<int> modifiers{1, 1, 1, 1, 1, 1};
 
 private:
   std::string chClass{"Commoner"};
   int health{5};
+  int ac{10};
 
   std::vector<int> statSpread{};
   std::vector<std::string> equipment{};
