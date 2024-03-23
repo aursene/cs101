@@ -4,17 +4,27 @@
 #include <ctime>
 #include <iostream>
 #include <random>
+#include <string>
 #include <unistd.h>
 #include <vector>
 using namespace std;
 
 std::default_random_engine engine{static_cast<unsigned int>(time(0))};
 std::uniform_int_distribution<unsigned int> d6(1, 6);
+std::uniform_int_distribution<unsigned int> d20(1, 20);
 vector<string> statList{"Strength", "Dexterity", "Constitution", "Wisdom", "Intelligence", "Charisma"};
 
 character::character()
 {
   cout << "I am born!\n";
+}
+
+int character::rollCheck(int mod)
+{
+  int roll{}, result{};
+  roll = d20(engine);
+  result = roll + mod;
+  return result;
 }
 
 string character::getClass()
@@ -93,6 +103,9 @@ void character::allocateStats()
   {
     int choice;
     int j{};
+    // system("clear");
+    cout << "\033c";
+
     cout << "Select what stat you would like to allocate your " << statSpread[l] << " to." << endl;
 
     for (string h : statList)
@@ -118,7 +131,8 @@ void character::allocateStats()
       }
     }
   }
-  system("clear");
+  // system("clear");
+  cout << "\033c";
 }
 
 void character::displayStats()
@@ -127,7 +141,7 @@ void character::displayStats()
   int tmp{};
   for (int j : stats)
   {
-    cout << statList[tmp] << " - " << j << endl;
+    cout << statList[tmp] << " - " << j << " (" << ((modifiers[tmp] < 1) ? "" : "+") << modifiers[tmp] << ")" << endl;
     tmp++;
   }
 }
@@ -153,25 +167,25 @@ void character::selectEquip()
 {
   int choice{};
   cout << "Please select your starting equipment: \n"
-       << "1 - Dagger (Best for Rogues)\n"
-       << "2 - Broadsword (Best for Fighters)\n"
-       << "3 - Shield (Best for Defense)\n";
+       << "1 - Ring of Accuracy\n"
+       << "2 - Band of Health\n"
+       << "3 - Shield\n";
   while (true)
   {
     cin >> choice;
     if (choice == 1)
     {
-      equipment.push_back("Dagger");
+      equipment.push_back("ringAccuracy");
       break;
     }
     else if (choice == 2)
     {
-      equipment.push_back("Broadsword");
+      equipment.push_back("ringHealth");
       break;
     }
     else if (choice == 3)
     {
-      equipment.push_back("Shield");
+      equipment.push_back("shield");
       break;
     }
     else
@@ -181,12 +195,21 @@ void character::selectEquip()
   }
 }
 
+void character::addEquip(string loot)
+{
+  equipment.push_back(loot);
+  for (string i : equipment)
+  {
+    cout << endl << "**" << i << "**" << endl;
+  }
+}
+
 string character::getEquipment()
 {
   string output;
-  for (string i : equipment)
+  for (int j = 0; j < equipment.size(); j++)
   {
-    output += i + ((i == equipment.back()) ? "" : ", ");
+    output = output + equipment[j] + ", ";
   }
   return output;
 }
@@ -197,11 +220,7 @@ void character::calculateStats()
   int counter{};
   for (int j : stats)
   {
-    cout << j;
-
     modifiers[counter] = ((j - 10) / 2);
-    cout << " and mod is " << modifiers[counter] << endl;
-    cout << modifiers[counter] << endl;
     counter++;
   }
   // ac calculations
@@ -211,4 +230,44 @@ void character::calculateStats()
     if (i == "Leather Armor")
       ac = 11 + modifiers[1];
   }
+
+  // hp calculations
+  if (chClass == "Fighter")
+  {
+    maxHp = 10 + modifiers[2];
+  }
+  else if (chClass == "Rogue")
+  {
+    maxHp = 8 + modifiers[2];
+  }
+  else if (chClass == "Wizard")
+  {
+    maxHp = 6 + modifiers[2];
+  }
+  else
+  {
+    cout << "\nInvalid class, is it still set as commoner?\n";
+  }
+}
+
+string character::getModifiers()
+{
+  int j{};
+  string output;
+
+  for (int i : modifiers)
+  {
+    output += to_string(i);
+    if (modifiers.size() - 1 != j)
+    {
+      output += ", ";
+    }
+    else
+    {
+      output += ".";
+    }
+    j++;
+  }
+
+  return output;
 }

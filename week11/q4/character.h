@@ -11,19 +11,23 @@ public:
   void displayStats();
   void rollStats();
   void selectEquip();
+  void addEquip(std::string);
   std::string getEquipment();
   void selectClass();
   std::string getClass();
   void calculateStats();
+  std::string getModifiers();
+  int rollCheck(int);
   std::vector<int> modifiers{1, 1, 1, 1, 1, 1};
 
 private:
   std::string chClass{"Commoner"};
-  int health{5};
+  int maxHp{5};
+  int hp{5};
   int ac{10};
 
-  std::vector<int> statSpread{};
   std::vector<std::string> equipment{};
+  std::vector<int> statSpread{};
 
   // order for stats goes Strength, Dexterity, Consitution, Intelligence, Wisdom, Charisma
   std::vector<int> stats{1, 1, 1, 1, 1, 1};
