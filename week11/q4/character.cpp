@@ -175,12 +175,12 @@ void character::selectEquip()
     cin >> choice;
     if (choice == 1)
     {
-      equipment.push_back("ringAccuracy");
+      equipment.push_back("Ring of Accuracy");
       break;
     }
     else if (choice == 2)
     {
-      equipment.push_back("ringHealth");
+      equipment.push_back("Band of Health");
       break;
     }
     else if (choice == 3)
@@ -223,8 +223,18 @@ void character::calculateStats()
     modifiers[counter] = ((j - 10) / 2);
     counter++;
   }
+  for (string l : equipment)
+  {
+    if (l == "Headband of Intellect")
+      modifiers[3] += 2;
+    if (l == "Gloves of Hill Giant Strength")
+      modifiers[0] += 2;
+    if (l == "Boots of Speed")
+      modifiers[1] += 2;
+  }
+
   // ac calculations
-  ac = 10 + dex;
+  ac = 10 + modifiers[1];
   for (string i : equipment)
   {
     if (i == "Leather Armor")
@@ -248,6 +258,30 @@ void character::calculateStats()
   {
     cout << "\nInvalid class, is it still set as commoner?\n";
   }
+
+  // toHit calculations
+  toHit = 0;
+  if (chClass == "Fighter")
+  {
+    toHit += modifiers[0];
+  }
+  else if (chClass == "Rogue")
+  {
+    toHit += modifiers[1];
+  }
+  else if (chClass == "Wizard")
+  {
+    toHit += modifiers[3];
+  }
+  else
+  {
+    cout << "\nInvalid class, is it still set as a commoner?\n";
+  }
+
+  if (find(equipment.begin(), equipment.end(), "Ring of Accuracy") != equipment.end())
+  {
+    toHit += 2;
+  }
 }
 
 string character::getModifiers()
@@ -270,4 +304,21 @@ string character::getModifiers()
   }
 
   return output;
+}
+
+int character::rollToHit()
+{
+  int result;
+  result = d20(engine) + toHit;
+  return result;
+}
+
+void character::getToHit()
+{
+  cout << "\n toHit = " << toHit << endl;
+}
+
+void character::takeDamage(int amount)
+{
+  hp -= amount;
 }
