@@ -12,11 +12,12 @@ std::uniform_int_distribution<unsigned int> getEncounter(1, 5);
 vector<string> lootList{"Band of Health", "Ring of Accuracy", "Headband of Intellect", "Gloves of Hill Giant Strength",
                         "Boots of Speed"};
 
-void encounters(character, int);
+void encounters(character &, int);
 
 int main()
 {
   cout << "Welcome to my game! Please press any key to start!";
+  getchar();
   character Player1;
   // Player1.rollStats();
   // Player1.allocateStats();
@@ -29,17 +30,23 @@ int main()
   Player1.displayStats();
   for (int k = 0; k < 5; k++)
   {
-    encounters(Player1, getEncounter(rng));
-    cout << Player1.getEquipment() << endl;
+    // encounters(Player1, getEncounter(rng));
+    encounters(Player1, 1);
   }
 
   cout << "\n\ngod save the queen\n\n";
 }
 
-void encounters(character Player, int encounter)
+void encounters(character &Player, int encounter)
 {
   std::uniform_int_distribution<unsigned int> loot(0, lootList.size());
   char input;
+
+
+  cout << "\033[2J\033[1;1H";
+  Player.displayStats();
+  cout << endl;
+
 
   switch (encounter)
   {
@@ -56,7 +63,8 @@ void encounters(character Player, int encounter)
         int lootGot = loot(rng);
 
         cout << "\nYou succesfully pry the item out from under the boulder. It was a " << lootList[lootGot] << ".\n";
-        Player.equipment.push_back(lootList[lootGot]);
+        // Player.equipment.push_back(lootList[2]);
+        Player.addEquip(lootList[lootGot]);
         lootList.erase(lootList.begin() + lootGot);
       }
       else
@@ -81,8 +89,8 @@ void encounters(character Player, int encounter)
         int lootGot = loot(rng);
 
         cout << "\nYou succesfully answered the riddle! The sphinx rewards you with a " << lootList[lootGot] << ".\n";
-        Player.equipment.push_back(lootList[lootGot]);
-        // Player.addEquip(lootList[lootGot]);
+        // Player.equipment.push_back(lootList[lootGot]);
+        Player.addEquip(lootList[lootGot]);
         lootList.erase(lootList.begin() + lootGot);
       }
       else
@@ -110,8 +118,8 @@ void encounters(character Player, int encounter)
         cout
             << "\nYou caught the critter! It drops the item it was carrying and you let it scurry away. The item was a "
             << lootList[lootGot] << ".\n";
-        Player.equipment.push_back(lootList[lootGot]);
-        // Player.addEquip(lootList[lootGot]);
+        // Player.equipment.push_back(lootList[lootGot]);
+        Player.addEquip(lootList[lootGot]);
         lootList.erase(lootList.begin() + lootGot);
       }
       else
@@ -138,8 +146,8 @@ void encounters(character Player, int encounter)
 
         cout << "\nYou sweet talked her out of taking your firstborn, and talked her into giving you an item! It is a "
              << lootList[lootGot] << ".\n";
-        Player.equipment.push_back(lootList[lootGot]);
-        // Player.addEquip(lootList[lootGot]);
+        // Player.equipment.push_back(lootList[lootGot]);
+        Player.addEquip(lootList[lootGot]);
         lootList.erase(lootList.begin() + lootGot);
       }
       else
@@ -167,8 +175,8 @@ void encounters(character Player, int encounter)
         cout << "\nYou notice that they are winterberries, a highly poisonous fruit. But as you are taking a look, you "
                 "notice a "
              << lootList[lootGot] << "in the bush!\n";
-        Player.equipment.push_back(lootList[lootGot]);
-        // Player.addEquip(lootList[lootGot]);
+        // Player.equipment.push_back(lootList[lootGot]);
+        Player.addEquip(lootList[lootGot]);
         lootList.erase(lootList.begin() + lootGot);
       }
       else

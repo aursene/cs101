@@ -198,10 +198,6 @@ void character::selectEquip()
 void character::addEquip(string loot)
 {
   equipment.push_back(loot);
-  for (string i : equipment)
-  {
-    cout << endl << "**" << i << "**" << endl;
-  }
 }
 
 string character::getEquipment()

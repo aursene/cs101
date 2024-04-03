@@ -22,7 +22,10 @@ public:
   int rollToHit();
   void takeDamage(int);
   std::vector<int> modifiers{1, 1, 1, 1, 1, 1};
+
+
   std::vector<std::string> equipment{};
+
 
 private:
   std::string chClass{"Commoner"};
