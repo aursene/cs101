@@ -13,6 +13,7 @@ vector<string> lootList{"Band of Health", "Ring of Accuracy", "Headband of Intel
                         "Boots of Speed"};
 
 void encounters(character &, int);
+char getYn();
 
 int main()
 {
@@ -37,6 +38,30 @@ int main()
   cout << "\n\ngod save the queen\n\n";
 }
 
+char getYn()
+{
+  char input;
+
+  while (true)
+  {
+    cin >> input;
+    if (cin.fail())
+    {
+      cin.clear();
+      cin.ignore(100000000, '\n');
+      cout << "Please enter Y/n";
+    }
+    else if (tolower(input) != 'y' && tolower(input) != 'n')
+    {
+      cout << "Please enter Y/n ";
+    }
+    else
+    {
+      return input;
+    }
+  }
+}
+
 void encounters(character &Player, int encounter)
 {
   std::uniform_int_distribution<unsigned int> loot(0, lootList.size());
@@ -53,7 +78,7 @@ void encounters(character &Player, int encounter)
   case 1:
     cout << "You've come across a large boulder in your travels, and it looks like there might be something under it. "
             "Would you like to try lifting it? (Y/n)";
-    cin >> input;
+    input = getYn();
     if (input == 'y' || input == 'Y')
     {
       int roll{Player.rollCheck(Player.modifiers[0])};
@@ -80,7 +105,7 @@ void encounters(character &Player, int encounter)
 
   case 2:
     cout << "You come across a sphinx that asks you to answer a riddle, do you attempt to answer? (Y/n)";
-    cin >> input;
+    input = getYn();
     if (tolower(input) == 'y')
     {
       int roll{Player.rollCheck(Player.modifiers[3])};
@@ -107,7 +132,7 @@ void encounters(character &Player, int encounter)
   case 3:
     cout << "As you are walking the forest path you notice a small creature with a shiny object in it's mouth. As soon "
             "as it notices you, it starts to run away. Would you like to chase it? (Y/n)";
-    cin >> input;
+    input = getYn();
     if (tolower(input) == 'y')
     {
       int roll{Player.rollCheck(Player.modifiers[1])};
@@ -136,7 +161,7 @@ void encounters(character &Player, int encounter)
   case 4:
     cout << "Travelling through the marshes you come across an old hag. She attempts to get you to make a deal for "
             "your firstborn child. Would you like to try and talk your way out of it? (Y/n)";
-    cin >> input;
+    input = getYn();
     if (tolower(input) == 'y')
     {
       int roll{Player.rollCheck(Player.modifiers[5])};
@@ -164,7 +189,8 @@ void encounters(character &Player, int encounter)
   case 5:
     cout << "You come across a bushel of fruits. You can't tell if they are poisonous or edible at first glance. Would "
             "you like to take a closer look? (Y/n)";
-    cin >> input;
+
+    input = getYn();
     if (tolower(input) == 'y')
     {
       int roll{Player.rollCheck(Player.modifiers[4])};

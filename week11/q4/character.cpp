@@ -18,6 +18,10 @@ character::character()
 {
   cout << "I am born!\n";
 }
+character::~character()
+{
+  cout << "I am gone!\n";
+}
 
 int character::rollCheck(int mod)
 {

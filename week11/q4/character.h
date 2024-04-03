@@ -6,6 +6,7 @@ class character
 {
 public:
   character();
+  ~character();
   int rollOneStat();
   void allocateStats();
   void displayStats();
