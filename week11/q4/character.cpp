@@ -16,62 +16,18 @@ vector<string> statList{"Strength", "Dexterity", "Constitution", "Wisdom", "Inte
 
 character::character()
 {
-  cout << "I am born!\n";
+  cout << "I am a new traveller! What is my name? ";
+  cin >> name;
+
+  rollStats();
+  allocateStats();
+  selectClass();
+  calculateStats();
+  hp = maxHp;
+  // selectEquip();
 }
 character::~character()
 {
-  cout << "I am gone!\n";
-}
-
-int character::rollCheck(int mod)
-{
-  int roll{}, result{};
-  roll = d20(engine);
-  result = roll + mod;
-  return result;
-}
-
-string character::getClass()
-{
-  return chClass;
-}
-
-void character::selectClass()
-{
-  string classSelect;
-  cout << "Please select your Class: \n"
-       << "Rogue - High Dex, Low Con\n"
-       << "Fighter - High Str, Low Int\n"
-       << "Wizard - High Int, Low Str\n";
-  cin >> classSelect;
-  while (true)
-  {
-    if (classSelect == "Rogue")
-    {
-      chClass = "Rogue";
-      stats[1] += 2;
-      stats[2] -= 2;
-      break;
-    }
-    else if (classSelect == "Fighter")
-    {
-      chClass = "Fighter";
-      stats[0] += 2;
-      stats[4] -= 2;
-      break;
-    }
-    else if (classSelect == "Wizard")
-    {
-      chClass = "Wizard";
-      stats[4] += 2;
-      stats[0] -= 2;
-      break;
-    }
-    else
-    {
-      cout << "Please select one of the three available classes";
-    }
-  }
 }
 
 int character::rollOneStat()
@@ -97,6 +53,32 @@ int character::rollOneStat()
   return total;
 }
 
+void character::rollStats()
+{
+  for (int i = 0; i < 6; i++)
+  {
+    statSpread.push_back(rollOneStat());
+  }
+  sort(statSpread.begin(), statSpread.end(), greater<>());
+
+  cout << "\033c";
+  cout << "Let's start by choosing your stats, the attributes that will affect how well you can do different things!\n"
+       << "These stats are found by rolling four 6-sided dice, then removing the lowest one and adding them all up\n\n";
+
+  cout << "Your stat choices are: ";
+
+  int counter{0};
+  for (int k : statSpread)
+  {
+    counter++;
+    cout << k << (counter == statSpread.size() ? " " : ", ");
+  }
+  cout << endl;
+
+  cout << "Press the enter key to continue";
+  cin.get();
+}
+
 void character::allocateStats()
 {
   int j{};
@@ -108,13 +90,17 @@ void character::allocateStats()
     int choice;
     int j{};
     // system("clear");
-    cout << "\033c";
+    cout << "\033c"
+         << "Next, we'll choose what attribute to put those stats in. The bigger the number, the better you will do at "
+            "tasks requiring that attribute\n";
 
     cout << "Select what stat you would like to allocate your " << statSpread[l] << " to." << endl;
 
     for (string h : statList)
     {
       j++;
+      if (allocated[j - 1] == true)
+        continue;
       cout << j << " - " << h << " = " << stats[j - 1] << endl;
     }
 
@@ -122,7 +108,17 @@ void character::allocateStats()
     while (breakout == false)
     {
       cin >> choice;
-      if (allocated[choice - 1] == true)
+      if (cin.fail())
+      {
+        cin.clear();
+        cin.ignore(10000000, '\n');
+        cout << "Please enter the number next to the stat you would like to allocate to\n";
+      }
+      else if (choice > 6 || choice < 1)
+      {
+        cout << "Please enter the number next to the stat you would like to allocate to\n";
+      }
+      else if (allocated[choice - 1] == true)
       {
         cout << "Stat has already been allocated: ";
       }
@@ -141,43 +137,93 @@ void character::allocateStats()
 
 void character::displayStats()
 {
-  cout << "Your stats are: ";
+  cout << "\033c"
+       << "Your stats are: ";
   int tmp{};
   for (int j : stats)
   {
     cout << statList[tmp] << " - " << j << " (" << ((modifiers[tmp] < 1) ? "" : "+") << modifiers[tmp] << ")" << endl;
     tmp++;
   }
+  cout << "\nPress enter to continue\n";
+  cin.get();
 }
 
-void character::rollStats()
+
+int character::rollCheck(int mod)
 {
-  cout << endl << "Your stat spread is: ";
-  for (int i = 0; i < 6; i++)
-  {
-    statSpread.push_back(rollOneStat());
-  }
-  sort(statSpread.begin(), statSpread.end(), greater<>());
-  int counter{0};
-  for (int k : statSpread)
-  {
-    counter++;
-    cout << k << (counter == statSpread.size() ? " " : ", ");
-  }
-  cout << endl;
+  int roll{}, result{};
+  roll = d20(engine);
+  result = roll + mod;
+  return result;
 }
+
+string character::getClass()
+{
+  return chClass;
+}
+
+void character::selectClass()
+{
+  int classSelect;
+  cout << "Now we'll select out starting class. This will slightly affect two of our stats, but is mostly used to "
+          "determine what stat to use when attacking.\n"
+       << "Please select your Class (Enter 1, 2, or 3): \n"
+       << "(1) Rogue - High Dex, Low Con\n"
+       << "(2) Fighter - High Str, Low Int\n"
+       << "(3) Wizard - High Int, Low Str\n";
+  cin >> classSelect;
+  while (true)
+  {
+    if (classSelect == 1)
+    {
+      chClass = "Rogue";
+      stats[1] += 2;
+      stats[2] -= 2;
+      break;
+    }
+    else if (classSelect == 2)
+    {
+      chClass = "Fighter";
+      stats[0] += 2;
+      stats[4] -= 2;
+      break;
+    }
+    else if (classSelect == 3)
+    {
+      chClass = "Wizard";
+      stats[4] += 2;
+      stats[0] -= 2;
+      break;
+    }
+    else
+    {
+      cout << "Please select one of the three available classes";
+    }
+  }
+}
+
 
 void character::selectEquip()
 {
   int choice{};
-  cout << "Please select your starting equipment: \n"
-       << "1 - Ring of Accuracy\n"
-       << "2 - Band of Health\n"
-       << "3 - Shield\n";
+  cout << "Please select your starting equipment (1-3): \n"
+       << "(1) Ring of Accuracy\n"
+       << "(2) Band of Health\n"
+       << "(3) Shield\n";
   while (true)
   {
     cin >> choice;
-    if (choice == 1)
+    if (cin.fail())
+    {
+      cin.clear();
+      cin.ignore(10000000, '\n');
+    }
+    else if (choice > 3 || choice < 1)
+    {
+      cout << "Please enter a number 1-3\n";
+    }
+    else if (choice == 1)
     {
       equipment.push_back("Ring of Accuracy");
       break;
@@ -321,4 +367,22 @@ void character::getToHit()
 void character::takeDamage(int amount)
 {
   hp -= amount;
+}
+
+void character::finalStats()
+{
+  cout << "Your name is " << name << "\nYou are a " << chClass << endl;
+
+  cout << "\nYour stats are: ";
+  int tmpTwo{};
+  for (int j : stats)
+  {
+    cout << statList[tmpTwo] << " - " << j << " (" << ((modifiers[tmpTwo] < 1) ? "" : "+") << modifiers[tmpTwo] << ")"
+         << endl;
+    tmpTwo++;
+  }
+
+  cout << "\nYou have these in your inventory: " << endl << getEquipment() << endl;
+
+  cout << "\nYour Max HP is: " << maxHp << "\nYour Current HP is: " << hp << endl;
 }

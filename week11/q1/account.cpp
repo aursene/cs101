@@ -4,14 +4,14 @@ using namespace std;
 
 account::account()
 {
-  /*cout << "What is your name? ";
+  cout << "What is your name? ";
   cin >> name;
 
   cout << "What is your ID number? ";
   cin >> ID;
 
   cout << "How much do you have in your bank account? ($x.xx) ";
-  cin >> bal;*/
+  cin >> bal;
 
   cout << "Created!\n\n";
 }
