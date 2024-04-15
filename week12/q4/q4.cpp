@@ -5,49 +5,58 @@
  */
 
 
-#include <cmath>    //allows basic math operations
+#include <cmath> //allows basic math operations
+#include <fstream>
 #include <iomanip>  //interpret setw()
 #include <iostream> //interpret cout<<
 
 using namespace std;
 
-void title();             // declares function title()
-void display(char box[]); // declares function display()
-void choose(char);        // prompts the player for a choice, then updates the board with that choice
-void chooseX();
-bool win();
+void title();              // declares function title()
+void display(char[]);      // declares function display()
+void choose(char[], char); // prompts the player for a choice, then updates the board with that choice
+void getWinTime();
+string logWin(char[]);
+bool win(char[]);
 
-bool replay;
+bool replay{true};
 
 // this will only flop between 0 and 1, indicating whether someone has won or not
 int winStatus{0};
 
 // this sets the charracter array that we will edit to place the Xs and Os
-char box[9]{'1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
 // initiates main function
 int main()
 {
+  title();
   while (replay)
   {
-    title();
+    char box[9]{'1', '2', '3', '4', '5', '6', '7', '8', '9'};
     {
       int counter{};
-      while (!win())
+      while (!win(box))
       {
         display(box);
         if (counter % 2 == 0)
         {
-          choose('X');
+          choose(box, 'X');
         }
         else
         {
-          choose('O');
+          choose(box, 'O');
         }
         counter++;
       }
+      ofstream writeWin("./winlog.txt", ios::out);
+      writeWin << logWin(box) << endl;
     }
     display(box);
+
+    char tmp{};
+    cout << "Would you like to play again (Y to continue)? ";
+    cin >> tmp;
+    (tolower(tmp) == 'y') ? (replay = true) : (replay = false);
   }
   return 0; // ends program
 }
@@ -61,18 +70,25 @@ void title()
 }
 
 
-void display(char box[])
+void display(char boxD[])
 {
+  /*cout << "\n";
+  // Displays TTT Board
+  cout << setw(5) << boxD[0] << setw(3) << "|" << setw(3) << boxD[1] << setw(3) << "|" << setw(3) << boxD[2] << endl;
+  cout << setw(3) << " "
+       << "----|-----|-----\n";
+  cout << setw(5) << boxD[3] << setw(3) << "|" << setw(3) << boxD[4] << setw(3) << "|" << setw(3) << boxD[5] << endl;
+  cout << setw(3) << " "
+       << "----|-----|-----\n";
+  cout << setw(5) << boxD[6] << setw(3) << "|" << setw(3) << boxD[7] << setw(3) << "|" << setw(3) << boxD[8] << endl
+       << endl;*/
+
+  string display{};
   cout << "\n";
   // Displays TTT Board
-  cout << setw(5) << box[0] << setw(3) << "|" << setw(3) << box[1] << setw(3) << "|" << setw(3) << box[2] << endl;
-  cout << setw(3) << " "
-       << "----|-----|-----\n";
-  cout << setw(5) << box[3] << setw(3) << "|" << setw(3) << box[4] << setw(3) << "|" << setw(3) << box[5] << endl;
-  cout << setw(3) << " "
-       << "----|-----|-----\n";
-  cout << setw(5) << box[6] << setw(3) << "|" << setw(3) << box[7] << setw(3) << "|" << setw(3) << box[8] << endl
-       << endl;
+
+  display += "   ";
+  display += boxD[0];
 }
 
 /*void chooseX()
@@ -93,24 +109,23 @@ start:
     box[selection - 1] = 'X';
 }*/
 
-// identical to chooseX(), but for the player playing Os
-void choose(char symbol)
+void choose(char boxC[], char symbol)
 {
   int selection{};
 
   while (true)
   {
-    cout << "\n(O) Please select which square you'd like to play: ";
+    cout << "\n(" << symbol << ") Please select which square you'd like to play: ";
     cin >> selection;
 
-    if (box[selection - 1] == 'X' || box[selection - 1] == 'O')
+    if (boxC[selection - 1] == 'X' || boxC[selection - 1] == 'O')
     {
       cout << "Please select another square" << endl;
       continue;
     }
     else
     {
-      box[selection - 1] = symbol;
+      boxC[selection - 1] = symbol;
       break;
     }
   }
@@ -118,7 +133,7 @@ void choose(char symbol)
 
 // A brute force approach to checking the win status, it checks for any rows, columns or diagonals that contain three of
 // the same char
-bool win()
+bool win(char box[])
 {
   if ((box[0] == box[1]) && (box[0] == box[2]))
   {
@@ -196,4 +211,71 @@ bool win()
   {
     return false;
   }
+}
+
+
+string logWin(char box[])
+{
+  if ((box[0] == box[1]) && (box[0] == box[2]))
+  {
+    if (box[0] == 'O')
+      return "O has won! (Row 1)";
+    else
+      return "X has won! (Row 1)";
+  }
+  else if ((box[3] == box[4]) && (box[3] == box[5]))
+  {
+    if (box[3] == 'O')
+      return "O has won! (Row 2)";
+    else
+      return "X has won! (Row 2)";
+  }
+  else if ((box[6] == box[7]) && (box[6] == box[8]))
+  {
+    if (box[6] == 'O')
+      return "O has won! (Row 3)";
+    else
+      return "X has won! (Row 3)";
+  }
+  else if ((box[0] == box[3]) && (box[0] == box[6]))
+  {
+    if (box[0] == 'O')
+      return "O has won! (Column 1)";
+    else
+      return "X has won! (Column 1)";
+  }
+  else if ((box[1] == box[4]) && (box[0] == box[7]))
+  {
+    // winStatus = 1;
+    if (box[1] == 'O')
+      return "O has won! (Column 2)";
+    else
+      return "X has won! (Column 2)";
+  }
+  else if ((box[2] == box[5]) && (box[2] == box[8]))
+  {
+    // winStatus = 1;
+    if (box[2] == 'O')
+      return "O has won! (Column 3)";
+    else
+      return "X has won! (Column 3)";
+  }
+  else if ((box[0] == box[4]) && (box[0] == box[8]))
+  {
+    // winStatus = 1;
+    if (box[0] == 'O')
+      return "O has won! (Left-to-right Diagonal)";
+    else
+      return "X has won! (Left-to-right Diagonal)";
+  }
+  else if ((box[2] == box[4]) && (box[2] == box[6]))
+  {
+    // winStatus = 1;
+    if (box[2] == 'O')
+      return "O has won! (Right-to-left Diagonal)";
+    else
+      return "X has won! (Right-to-left Diagonal)";
+  }
+  else
+    return "Error - why is the win function being called?";
 }
