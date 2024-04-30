@@ -1,3 +1,3 @@
-B_Beckman@company.com
-L_Rotteveel@company.com
-G_Lee@company.com
+b_beckman@company.com
+g_leuchtefeld@company.com
+l_rotteveel@company.com

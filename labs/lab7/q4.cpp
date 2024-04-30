@@ -1,7 +1,8 @@
 /*
- Writen by Braxton Beckman on 2/15/23
- Week 4 Lab: Tic Tac Toe (Playable)
- Using functions and cin>> to display and input to a TTT board
+ Writen by Braxton Beckman on 4/19/24
+ Week 7 Lab: Tic Tac Toe (Write Win)
+ Using fstream to take the results of a TTT game and write them to a file, then read the file after all games are
+ played.
  */
 
 
@@ -41,8 +42,8 @@ int main()
         cout << display(box) << endl;
         if (counter > 8)
         {
-          /*cout << "It's a tie!";
-          writeWin.open("./winlog.txt", ios::app);
+          cout << "It's a tie!";
+          /*writeWin.open("./winlog.txt", ios::app);
           writeWin << getWinTime() << "\n//////////////////////////////\n"
                    << logWin(box) << endl
                    << display(box) << endl
@@ -74,6 +75,17 @@ int main()
     cout << "\nWould you like to play again (Y to continue)? ";
     cin >> tmp;
     (tolower(tmp) == 'y') ? (replay = true) : (replay = false);
+  }
+
+  ifstream TTTResults;
+  TTTResults.open("./winlog.txt", ios::in);
+  cout << "\033c"
+       << "Let's take a look the results!\n";
+  string buffer;
+  while (!TTTResults.eof())
+  {
+    getline(TTTResults, buffer);
+    cout << buffer << endl;
   }
   return 0; // ends program
 }

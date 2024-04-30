@@ -24,12 +24,11 @@ bool replay{true};
 // this will only flop between 0 and 1, indicating whether someone has won or not
 int winStatus{0};
 
+// this sets the charracter array that we will edit to place the Xs and Os
 
 // initiates main function
 int main()
 {
-  ofstream writeWin;
-
   title();
   while (replay)
   {
@@ -39,18 +38,7 @@ int main()
       while (!win(box))
       {
         cout << display(box) << endl;
-        if (counter > 8)
-        {
-          /*cout << "It's a tie!";
-          writeWin.open("./winlog.txt", ios::app);
-          writeWin << getWinTime() << "\n//////////////////////////////\n"
-                   << logWin(box) << endl
-                   << display(box) << endl
-                   << endl;
-          writeWin.close();*/
-          break;
-        }
-        else if (counter % 2 == 0)
+        if (counter % 2 == 0)
         {
           choose(box, 'X');
         }
@@ -61,6 +49,7 @@ int main()
         counter++;
         cout << "\033c";
       }
+      ofstream writeWin;
       writeWin.open("./winlog.txt", ios::app);
       writeWin << getWinTime() << "\n//////////////////////////////\n"
                << logWin(box) << endl
@@ -74,6 +63,17 @@ int main()
     cout << "\nWould you like to play again (Y to continue)? ";
     cin >> tmp;
     (tolower(tmp) == 'y') ? (replay = true) : (replay = false);
+  }
+
+  ifstream TTTResults;
+  TTTResults.open("./winlog.txt", ios::in);
+  cout << "\033c"
+       << "Let's take a look at the results!\n";
+  string buffer;
+  while (!TTTResults.eof())
+  {
+    TTTResults >> buffer;
+    cout << buffer << endl;
   }
   return 0; // ends program
 }
@@ -270,7 +270,7 @@ string logWin(char box[])
     else
       return "X has won! (Column 1)";
   }
-  else if ((box[1] == box[4]) && (box[1] == box[7]))
+  else if ((box[1] == box[4]) && (box[0] == box[7]))
   {
     if (box[1] == 'O')
       return "O has won! (Column 2)";

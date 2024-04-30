@@ -8,19 +8,25 @@ ifstream fIn;
 
 int main()
 {
-  cout << "Hello, User!" << endl;
-  cin.get();
+  cout << "Hello, User! We are going to make some emails for employees of 'company'!" << endl;
   string fName{""}, lName{""};
 
 
   fOut.open("./employee.txt", ofstream::out);
-  for (int i; i < 3; i++)
+  if (!fOut)
+  {
+    cerr << "Error opening file ";
+    exit(EXIT_FAILURE);
+  }
+
+  for (int i = 0; i < 3; i++)
   {
     cout << "Please enter your first name: ";
     cin >> fName;
     cout << "Now your last name: ";
     cin >> lName;
 
+    cout << endl;
 
     fOut << fName[0] << "_" << lName << "@company.com" << endl;
   }

@@ -20,8 +20,6 @@ int main()
     exit(EXIT_FAILURE);
   }
 
-  test1 << "Braxton Beckman" << endl; // sends my name to the fstream,
-
   string name{"testing1"};
 
   while (true)
