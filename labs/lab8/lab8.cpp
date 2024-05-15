@@ -1,14 +1,14 @@
 /*
  Writen by Braxton Beckman on 2/15/23
- Week 4 Lab: Tic Tac Toe (Playable)
- Using functions and cin>> to display and input to a TTT board
+ Week 8 Lab: Tic Tac Toe (Research)
+ Using strftime() and escape sequences to create a playable TTT game with timestamps
  */
 
 
-#include <cmath> //allows basic math operations
+#include <cctype>
 #include <fstream>
-#include <iomanip>  //interpret setw()
 #include <iostream> //interpret cout<<
+#include <stdlib.h>
 
 using namespace std;
 
@@ -18,10 +18,14 @@ void choose(char[], char); // prompts the player for a choice, then updates the 
 string getWinTime();
 string logWin(char[]);
 bool win(char[]);
+void save(char[]);
+bool saveExists();
 
 bool replay{true};
+bool svCont{false};
+int nCounter{0};
 
-// this will only flop between 0 and 1, indicating whether someone has won or not
+// this will only flip between 0 and 1, indicating whether someone has won or not
 int winStatus{0};
 
 // this sets the charracter array that we will edit to place the Xs and Os
@@ -30,13 +34,53 @@ int winStatus{0};
 int main()
 {
   title();
+
+  char choice{};
+  if (saveExists() == true)
+  {
+    cout << "Would you like to continue a previous game?";
+    cin >> choice;
+  }
+  if (tolower(choice) == 'y' && saveExists() == true)
+  {
+    svCont = true;
+  }
+
   while (replay)
   {
     char box[9]{'1', '2', '3', '4', '5', '6', '7', '8', '9'};
+    if (svCont == true && saveExists())
+    {
+      svCont = false;
+      ifstream readSave;
+      readSave.open("./savefile.txt", ios::in);
+      char tmp;
+      for (int i = 0; i < 9; i++)
+      {
+        readSave >> tmp;
+        box[i] = tmp;
+        if (tmp == 'X' || tmp == 'O')
+        {
+          nCounter++;
+        }
+      }
+
+      readSave.close();
+    }
+
+
     {
       int counter{};
+      counter = nCounter + 1;
+      nCounter = 0;
       while (!win(box))
       {
+        if (counter == 9)
+        {
+          cout << "It's a tie!";
+        }
+
+
         cout << display(box) << endl;
         if (counter % 2 == 0)
         {
@@ -46,11 +90,19 @@ int main()
         {
           choose(box, 'O');
         }
+
         counter++;
-        cout << "\033c";
+        if (counter == 9)
+        {
+          cout << "\033c"
+               << "It's a tie!";
+          break;
+        }
+        cout << "\033c"; // These escape sequences are sprinkled throughout the program, used to clear the screen and
+                         // make things easier to see
       }
       ofstream writeWin;
-      writeWin.open("./winlog.txt", ios::app);
+      writeWin.open("./winlog.txt", ios::out);
       writeWin << getWinTime() << "\n//////////////////////////////\n"
                << logWin(box) << endl
                << display(box) << endl
@@ -62,7 +114,15 @@ int main()
     char tmp{};
     cout << "\nWould you like to play again (Y to continue)? ";
     cin >> tmp;
-    (tolower(tmp) == 'y') ? (replay = true) : (replay = false);
+    if (tolower(tmp == 'y'))
+    {
+      replay = true;
+      cout << "\033c";
+    }
+    else
+    {
+      replay = false;
+    }
   }
 
   ifstream TTTResults;
@@ -72,9 +132,10 @@ int main()
   string buffer;
   while (!TTTResults.eof())
   {
-    TTTResults >> buffer;
+    getline(TTTResults, buffer);
     cout << buffer << endl;
   }
+  TTTResults.close();
   return 0; // ends program
 }
 
@@ -82,8 +143,9 @@ int main()
 void title()
 {
   // displays title information
-  cout << "Written by Braxton Beckman on 4/11/24\nWeek 4 Lab Tic-Tac-To Project\nMade using functions and arrays to "
-          "allow the selection of squares and the ability to check for a win\n\n";
+  cout << "Written by Braxton Beckman on 4/29/24\nWeek 15 Lab Tic-Tac-To Project\nMade using commands strftime() and "
+          "escape sequences "
+          "allow the ability to record the time of a win and clear the terminal, allowing for easy viewing\n\n";
 }
 
 
@@ -141,10 +203,15 @@ void choose(char boxC[], char symbol)
 
   while (true)
   {
-    cout << "\n(" << symbol << ") Please select which square you'd like to play: ";
+    cout << "\n(" << symbol << ") Please select which square you'd like to play, or 99 to save and exit: ";
     cin >> selection;
-
-    if (boxC[selection - 1] == 'X' || boxC[selection - 1] == 'O')
+    if (selection == 99)
+    {
+      cout << "\nSaved! Thank you for playing, and come back anytime!" << endl;
+      save(boxC);
+      exit(0);
+    }
+    else if (boxC[selection - 1] == 'X' || boxC[selection - 1] == 'O')
     {
       cout << "Please select another square" << endl;
       continue;
@@ -197,7 +264,7 @@ bool win(char box[])
       cout << "X has won! (Column 1)" << endl;
     return true;
   }
-  else if ((box[1] == box[4]) && (box[0] == box[7]))
+  else if ((box[1] == box[4]) && (box[1] == box[7]))
   {
     // winStatus = 1;
     if (box[1] == 'O')
@@ -270,7 +337,7 @@ string logWin(char box[])
     else
       return "X has won! (Column 1)";
   }
-  else if ((box[1] == box[4]) && (box[0] == box[7]))
+  else if ((box[1] == box[4]) && (box[1] == box[7]))
   {
     if (box[1] == 'O')
       return "O has won! (Column 2)";
@@ -299,7 +366,7 @@ string logWin(char box[])
       return "X has won! (Right-to-left Diagonal)";
   }
   else
-    return "Error - why is the win function being called?";
+    return "It's a tie!";
 }
 
 string getWinTime()
@@ -312,4 +379,36 @@ string getWinTime()
   strftime(buffer, sizeof(buffer), "%B %d, %Y; %H:%M:%S", timeinfo);
 
   return buffer;
+}
+
+void save(char box[])
+{
+  ofstream saveStream;
+  saveStream.open("./savefile.txt", ios::out);
+
+  char *savePtr;
+  savePtr = box;
+  for (int i = 0; i < 9; i++)
+  {
+    saveStream << *savePtr << " ";
+    savePtr++;
+  }
+
+  saveStream.close();
+}
+
+bool saveExists()
+{
+  bool result;
+  fstream check;
+  check.open("./savefile.txt");
+  if (check.fail())
+  {
+    result = false;
+  }
+  else
+  {
+    result = true;
+  }
+  return result;
 }

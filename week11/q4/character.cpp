@@ -76,6 +76,7 @@ void character::rollStats()
   cout << endl;
 
   cout << "Press the enter key to continue";
+  cin.ignore(numeric_limits<streamsize>::max(), '\n');
   cin.get();
 }
 

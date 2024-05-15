@@ -77,7 +77,7 @@ int main()
   cout << "***Player 1***\n";
   Player1.finalStats();
 
-  cout << "***Player 2***\n";
+  cout << "\n\n***Player 2***\n";
   Player2.finalStats();
 }
 

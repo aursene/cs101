@@ -42,5 +42,5 @@ private:
   std::vector<int> statSpread{};
 
   // order for stats goes Strength, Dexterity, Consitution, Intelligence, Wisdom, Charisma
-  std::vector<int> stats{20, 20, 20, 20, 20, 20};
+  std::vector<int> stats{10, 10, 10, 10, 10, 10};
 };
